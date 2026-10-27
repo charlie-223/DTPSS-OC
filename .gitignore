@@ -1,0 +1,9 @@
+# Local tooling state
+.netlify
+node_modules/
+supabase/.temp/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example

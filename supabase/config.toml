@@ -1,0 +1,16 @@
+project_id = "sybjlkqrrkhxbfdumxuh"
+
+[functions.email-mfa]
+verify_jwt = true
+
+[functions.invite-admin]
+verify_jwt = true
+
+[functions.notify-new-training]
+verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true
+
+[functions.check-account]
+verify_jwt = false

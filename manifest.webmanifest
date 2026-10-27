@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "One Cainta — Disaster Preparedness Training and Simulation",
+  "short_name": "One Cainta",
+  "description": "Manage disaster preparedness training, simulation scenarios, participants, evaluations, and drill reports.",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f8f8",
+  "theme_color": "#171caa",
+  "icons": [
+    {
+      "src": "icons/app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
