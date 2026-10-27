@@ -1233,17 +1233,18 @@ html[data-theme="dark"] .toast[style*="255, 245, 244"] { border-color: #573b3a; 
 .page-content { background: #f7f9f8; }
 html[data-theme="dark"] .main-area,
 html[data-theme="dark"] .page-content { background: #101a22; }
-.app-shell.user-portal .sidebar { background: #fff; color: #283d4f; box-shadow: 2px 0 18px #102a4310; }
-.app-shell.user-portal .brand { color: #263d4f; }
-.app-shell.user-portal .brand small, .app-shell.user-portal .workspace-label { color: #788b98; }
-.app-shell.user-portal .nav-link { color: #506573; }
-.app-shell.user-portal .nav-link:hover { color: #174f42; background: #f1f7f4; }
-.app-shell.user-portal .nav-link.active { color: #243b4c; background: #f3f8f5; box-shadow: inset 3px 0 #168078; }
-.app-shell.user-portal .nav-link.active .nav-icon { color: #168078; }
-.app-shell.user-portal .sidebar-bottom { border-color: #e6edef; }
-.app-shell.user-portal .local-note strong { color: #344c5c; }
-.app-shell.user-portal .local-note small, .app-shell.user-portal .sidebar-bottom .text-button { color: #71838f; }
-.app-shell.user-portal .sidebar-bottom .text-button:hover { color: #176b73; }
+.app-shell.user-portal .sidebar { background: linear-gradient(180deg,#081f67,#0b2d85 72%,#071b55); color: #e7f0f5; }
+.app-shell.user-portal .brand { color: #fff; }
+.app-shell.user-portal .brand small { color: #b6c8dc; }
+.app-shell.user-portal .workspace-label { color: #9bb0c9; }
+.app-shell.user-portal .nav-link { color: #cad6e5; }
+.app-shell.user-portal .nav-link:hover { color: #fff; background: #ffffff18; }
+.app-shell.user-portal .nav-link.active { color: #fff; background: linear-gradient(100deg,#1d4593,#173b7a); box-shadow: inset 3px 0 #7ad5b8,0 4px 12px #071b271c; }
+.app-shell.user-portal .nav-link.active .nav-icon { color: #7ad5b8; }
+.app-shell.user-portal .sidebar-bottom { border-color: #ffffff30; }
+.app-shell.user-portal .local-note strong { color: #e5edf2; }
+.app-shell.user-portal .local-note small, .app-shell.user-portal .sidebar-bottom .text-button { color: #b6c8dc; }
+.app-shell.user-portal .sidebar-bottom .text-button:hover { color: #fff; }
 #app-shell[data-workspace-role="admin"] [data-user-portal-page],
 #app-shell[data-workspace-role="staff"] [data-user-portal-page] { display: none !important; }
 
