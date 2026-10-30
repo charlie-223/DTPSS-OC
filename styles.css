@@ -655,6 +655,7 @@ tbody tr:hover { background: #f8fbfa; }
 .icon-action.delete:hover { color: #b74747; border-color: #edcaca; }
 .table-footer { display: flex; justify-content: space-between; padding: 11px 16px; border-top: 1px solid #edf1f3; color: #8795a0; font-size: 10px; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 18px; background: #102a4373; }
+#delete-confirmation-backdrop { z-index: 41; }
 #sign-out-backdrop { z-index: 40; }
 #idle-timeout-backdrop { z-index: 50; }
 .modal-backdrop.hidden { display: none; }

@@ -303,6 +303,13 @@
         <form id="record-form"><div class="modal-body" id="modal-fields"></div><div class="modal-footer"><button class="button button-secondary" type="button" id="modal-cancel">Cancel</button><button class="button button-primary" type="submit" id="modal-submit">Save record</button></div></form>
       </section>
     </div>
+    <div class="modal-backdrop hidden" id="delete-confirmation-backdrop">
+      <section class="modal confirmation-modal" role="alertdialog" aria-modal="true" aria-labelledby="delete-confirmation-title" aria-describedby="delete-confirmation-description">
+        <div class="modal-header"><div><p class="eyebrow">DELETE RECORD</p><h2 id="delete-confirmation-title">Delete this record?</h2></div></div>
+        <div class="confirmation-body" id="delete-confirmation-description">This cannot be undone.</div>
+        <div class="modal-footer"><button class="button button-secondary" type="button" id="delete-confirmation-cancel">Cancel</button><button class="button button-danger" type="button" id="delete-confirmation-confirm">Delete</button></div>
+      </section>
+    </div>
     <div class="modal-backdrop hidden" id="account-security-backdrop">
       <section class="modal confirmation-modal account-security-modal" role="dialog" aria-modal="true" aria-labelledby="account-security-title" aria-describedby="account-security-description">
         <div class="modal-header"><div><p class="eyebrow">ADMIN SECURITY CHECK</p><h2 id="account-security-title">Confirm account change</h2></div><button class="icon-button" type="button" data-account-security-close aria-label="Close dialog">×</button></div>

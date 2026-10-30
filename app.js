@@ -112,6 +112,7 @@
   let accountActivityTimer = null;
   let activityUpdateInFlight = false;
   let pendingAccountAction = null;
+  let deleteConfirmationFocusTarget = null;
   let workspaceOffline = false;
   let offlineWorkspaceOnly = false;
   let workspaceSyncInFlight = false;
@@ -119,6 +120,7 @@
   const content = document.getElementById("page-content");
   const backdrop = document.getElementById("modal-backdrop");
   const pageLoader = document.getElementById("page-loader");
+  const deleteConfirmationBackdrop = document.getElementById("delete-confirmation-backdrop");
   const signOutBackdrop = document.getElementById("sign-out-backdrop");
   const idleTimeoutBackdrop = document.getElementById("idle-timeout-backdrop");
   const idleTimeoutCountdown = document.getElementById("idle-timeout-countdown");
@@ -3462,28 +3464,62 @@
     }
     const record = byId(collection, id);
     if (!record) return;
-    if (!window.confirm(`Delete this ${schemas[collection].title.toLowerCase()}? This cannot be undone.`)) return;
+    document.getElementById("delete-confirmation-title").textContent =
+      `Delete this ${schemas[collection].title.toLowerCase()}?`;
+    document.getElementById("delete-confirmation-description").textContent =
+      "This cannot be undone. Related records may be unlinked or removed.";
+    deleteConfirmationFocusTarget = document.activeElement;
+    deleteConfirmationBackdrop.dataset.collection = collection;
+    deleteConfirmationBackdrop.dataset.recordId = id;
+    deleteConfirmationBackdrop.classList.remove("hidden");
+    document.getElementById("delete-confirmation-cancel").focus();
+  }
+  async function confirmDeleteRecord() {
+    const { collection, recordId } = deleteConfirmationBackdrop.dataset;
+    if (!collection || !recordId) return false;
+    const record = byId(collection, recordId);
+    if (!record) {
+      closeDeleteConfirmation();
+      return false;
+    }
+    if (!canManageWorkspace()) {
+      closeDeleteConfirmation();
+      showToast("This account cannot delete shared workspace records.", true);
+      return false;
+    }
     const previousData = clone(data);
-    data[collection] = data[collection].filter(item => item.id !== id);
+    data[collection] = data[collection].filter(item => item.id !== recordId);
     if (collection === "programs") {
-      data.participants.forEach(person => { if (person.programId === id) person.programId = ""; });
+      data.participants.forEach(person => { if (person.programId === recordId) person.programId = ""; });
     }
-    if (collection === "participants") data.evaluations = data.evaluations.filter(item => item.participantId !== id);
+    if (collection === "participants") data.evaluations = data.evaluations.filter(item => item.participantId !== recordId);
     if (collection === "scenarios") {
-      data.evaluations = data.evaluations.filter(item => item.scenarioId !== id);
-      data.reports.forEach(item => { if (item.scenarioId === id) item.scenarioId = ""; });
+      data.evaluations = data.evaluations.filter(item => item.scenarioId !== recordId);
+      data.reports.forEach(item => { if (item.scenarioId === recordId) item.scenarioId = ""; });
     }
-    saveData(previousData).then(() => {
+    try {
+      await saveData(previousData);
       render();
       showToast(workspaceOffline || !navigator.onLine
         ? "Record deleted on this device. It will sync when the internet returns."
         : "Record deleted.");
-    }).catch(error => {
+      closeDeleteConfirmation(false);
+      return true;
+    } catch (error) {
       console.error("Unable to delete record:", error);
       data = previousData;
       render();
       showToast(`Delete failed: ${error.message}`, true);
-    });
+      return false;
+    }
+  }
+  function closeDeleteConfirmation(restoreFocus = true) {
+    deleteConfirmationBackdrop.classList.add("hidden");
+    deleteConfirmationBackdrop.removeAttribute("data-collection");
+    deleteConfirmationBackdrop.removeAttribute("data-record-id");
+    const focusTarget = deleteConfirmationFocusTarget;
+    deleteConfirmationFocusTarget = null;
+    if (restoreFocus && focusTarget?.isConnected) focusTarget.focus();
   }
   function filterCurrentTable() {
     const search = content.querySelector("[data-search]");
@@ -3749,6 +3785,7 @@
     });
   });
   document.getElementById("today-label").textContent = new Intl.DateTimeFormat("en-PH", { weekday: "short", month: "short", day: "numeric" }).format(new Date());
+  const deleteConfirmationButton = document.getElementById("delete-confirmation-confirm");
   const signOutConfirmButton = document.getElementById("sign-out-confirm");
   const profileMenuTrigger = document.getElementById("user-avatar");
   const profileMenu = document.getElementById("profile-menu");
@@ -3975,6 +4012,24 @@
   });
   idleTimeoutContinueButton.addEventListener("click", resetWorkspaceIdleTimeout);
   idleTimeoutSignOutButton.addEventListener("click", () => { void endWorkspaceSessionAfterIdle(); });
+  document.getElementById("delete-confirmation-cancel").addEventListener("click", () => closeDeleteConfirmation());
+  deleteConfirmationBackdrop.addEventListener("click", event => {
+    if (event.target === deleteConfirmationBackdrop) closeDeleteConfirmation();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !deleteConfirmationBackdrop.classList.contains("hidden")) {
+      closeDeleteConfirmation();
+    }
+  });
+  deleteConfirmationButton.addEventListener("click", async () => {
+    deleteConfirmationButton.disabled = true;
+    deleteConfirmationButton.textContent = "Deleting...";
+    const deleted = await confirmDeleteRecord();
+    if (!deleted && !deleteConfirmationBackdrop.classList.contains("hidden")) {
+      deleteConfirmationButton.disabled = false;
+      deleteConfirmationButton.textContent = "Delete";
+    }
+  });
   const closeSignOutDialog = (restoreFocus = true) => {
     signOutBackdrop.classList.add("hidden");
     signOutConfirmButton.disabled = false;
