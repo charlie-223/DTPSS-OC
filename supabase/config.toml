@@ -12,6 +12,9 @@ verify_jwt = true
 [functions.workspace-push]
 verify_jwt = true
 
+[functions.training-session-reminders]
+verify_jwt = false
+
 [functions.delete-account]
 verify_jwt = true
 

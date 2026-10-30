@@ -2940,7 +2940,7 @@
         { key: "type", label: "Training focus", type: "select", options: ["Emergency response", "First aid", "Evacuation", "General preparedness", "Other", "Earthquake", "Flood", "Fire", "Typhoon"], required: true },
         { key: "instructorId", label: "Assigned instructor", type: "instructor" },
         { key: "date", label: "Date", type: "date", required: true },
-        { key: "time", label: "Start time", type: "time" },
+        { key: "time", label: "Start time", type: "time", required: true },
         { key: "location", label: "Location / venue in Cainta, Rizal", type: "program-location", required: true, max: 120, full: true },
         { key: "locationLat", label: "Map latitude", type: "map-coordinate", min: 14.52, max: 14.63 },
         { key: "locationLng", label: "Map longitude", type: "map-coordinate", min: 121.07, max: 121.18 },

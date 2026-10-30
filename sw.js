@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "one-cainta-shell-v24";
+const CACHE_NAME = "one-cainta-shell-v25";
 const APP_SHELL = [
   "./",
   "./index.html",
