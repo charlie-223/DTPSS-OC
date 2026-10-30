@@ -3275,6 +3275,8 @@
       const locationLng = form.elements.namedItem("locationLng");
       locationLat.value = location.lat.toFixed(6);
       locationLng.value = location.lng.toFixed(6);
+      const locationName = form.elements.namedItem("location");
+      if (!locationName.value.trim()) locationName.value = "Pinned venue, Cainta, Rizal";
       status.textContent = `Pinned at ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}. Drag the pin to adjust it.`;
     };
     programLocationMap.on("click", event => setLocationPin(event.latlng));
