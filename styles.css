@@ -1119,7 +1119,8 @@ tbody tr { transition: background-color .18s ease; }
 }
 
 .header-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-.theme-toggle { width: 38px; height: 38px; display: inline-grid; flex: 0 0 auto; place-items: center; border: 1px solid #ffffff55; border-radius: 50%; color: #fff; background: #ffffff12; font-size: 18px; line-height: 1; transition: background .18s,border-color .18s,transform .18s; }
+.theme-toggle { width: 38px; height: 38px; display: inline-grid; flex: 0 0 auto; place-items: center; border: 1px solid #ffffff55; border-radius: 50%; color: #fff; background: #ffffff12; line-height: 1; transition: background .45s ease,border-color .45s ease,color .45s ease,transform .45s ease; }
+.theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .theme-toggle:hover { border-color: #ffffff99; background: #ffffff24; transform: translateY(-1px); }
 .theme-toggle-workspace { border-color: #dfe8ec; color: #405c70; background: #fff; }
 .theme-toggle-workspace:hover { border-color: #bdd4d7; color: #176b75; background: #f4faf9; }
@@ -1320,10 +1321,10 @@ html[data-theme="dark"] .toast[style*="255, 245, 244"] { border-color: #573b3a; 
 @supports (view-transition-name: root) {
   @media (prefers-reduced-motion: no-preference) {
     ::view-transition-old(root) {
-      animation: theme-zoom-out .55s ease-out both;
+      animation: theme-zoom-out 1s ease-in-out both;
     }
     ::view-transition-new(root) {
-      animation: theme-zoom-in 1.1s cubic-bezier(.2,.75,.25,1) both;
+      animation: theme-zoom-in 1.65s cubic-bezier(.2,.65,.25,1) both;
     }
     @keyframes theme-zoom-out {
       to { opacity: 0; transform: scale(1.025); }
@@ -1343,7 +1344,7 @@ html[data-theme="dark"] .toast[style*="255, 245, 244"] { border-color: #573b3a; 
 
 @media (prefers-reduced-motion: no-preference) {
   body, .landing-page, .landing-module, .auth-card, .main-area, .topbar, .panel, .stat-card, .action-card, .modal {
-    transition: background-color .35s ease,color .35s ease,border-color .35s ease;
+    transition: background-color .85s ease,color .85s ease,border-color .85s ease;
   }
 }
 
