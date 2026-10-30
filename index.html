@@ -8,6 +8,7 @@
     <title>One Cainta — Disaster Preparedness Training and Simulation</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="icons/app-192.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="stylesheet" href="styles.css">
     <script>
       try {
@@ -22,8 +23,17 @@
   <body>
     <div class="page-loader" id="page-loader" role="status" aria-live="polite" aria-label="Loading One Cainta">
       <span class="loading-spinner" aria-hidden="true"></span>
-      <span>Loading One Cainta...</span>
+      <span data-page-loader-message>Loading One Cainta...</span>
     </div>
+    <main class="signed-out-screen hidden" id="signed-out-screen" aria-labelledby="signed-out-title">
+      <section class="signed-out-card">
+        <img class="signed-out-logo" src="one-cainta-app-logo.png" alt="One Cainta">
+        <h1 id="signed-out-title">You have signed out!</h1>
+        <p class="signed-out-message hidden" id="signed-out-message"></p>
+        <p class="signed-out-countdown" aria-live="polite">Redirecting in <span id="signed-out-countdown">5</span> seconds</p>
+        <a class="signed-out-sign-in" id="signed-out-sign-in" href="#login">Go to <span>sign in</span></a>
+      </section>
+    </main>
     <main class="landing-page" id="landing-page">
       <div class="landing-masthead">
         <header class="landing-header" aria-label="Municipality of Cainta header">
@@ -213,7 +223,6 @@
           <button class="nav-link hidden" data-page="my-sessions" data-user-portal-page><span class="nav-icon">♧</span><span class="nav-label">My Sessions</span></button>
           <button class="nav-link hidden" data-page="my-performance" data-user-portal-page><span class="nav-icon">▥</span><span class="nav-label">My Performance</span></button>
           <button class="nav-link hidden" data-page="browse-drills" data-user-portal-page><span class="nav-icon">⌕</span><span class="nav-label">Browse Drills</span></button>
-          <button class="nav-link hidden" data-page="notifications" data-user-portal-page><span class="nav-icon">▣</span><span class="nav-label">Notifications &amp; SMS</span></button>
           <button class="nav-link hidden" id="user-management-link" data-page="users"><span class="nav-icon">♙</span><span class="nav-label">User management</span></button>
         </nav>
         <div class="sidebar-bottom">
@@ -236,6 +245,17 @@
               </div>
               <div class="workspace-header-actions">
                 <span class="user-identity" id="user-identity"></span>
+                <div class="notification-center-wrap" id="notification-center-wrap">
+                  <button class="notification-bell" id="notification-bell" type="button" aria-label="Notifications" aria-expanded="false" aria-controls="notification-center">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"></path></svg>
+                    <span class="notification-count hidden" id="notification-count"></span>
+                  </button>
+                  <section class="notification-center hidden" id="notification-center" aria-label="Notifications" aria-live="polite">
+                    <div class="notification-center-header"><div><p class="eyebrow">WORKSPACE UPDATES</p><h2>Notifications</h2></div><button class="panel-link" id="notification-mark-all" type="button">Mark all read</button></div>
+                    <div class="notification-preferences" id="notification-preferences"></div>
+                    <div class="notification-center-list" id="notification-center-list"><p class="empty-state">Loading notifications…</p></div>
+                  </section>
+                </div>
                 <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode">☾</button>
                 <div class="profile-menu-wrap">
                   <button class="avatar workspace-avatar profile-menu-trigger" id="user-avatar" type="button" aria-label="Open account menu" aria-haspopup="menu" aria-expanded="false"></button>
@@ -289,7 +309,7 @@
         <form id="account-security-form">
           <div class="confirmation-body">
             <p id="account-security-description"></p>
-            <div class="form-field"><label for="account-security-password">Confirm your Admin password</label><div class="password-input-wrap"><input class="form-control" id="account-security-password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-password-toggle="account-security-password" aria-label="Show confirmation password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle><path class="password-eye-slash hidden" d="m3 3 18 18"></path></svg></button></div></div>
+            <div class="form-field"><label for="account-security-password">Confirm your Admin password</label><div class="password-input-wrap"><input class="form-control" id="account-security-password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-password-toggle="account-security-password" data-password-description="confirmation password" aria-label="Show confirmation password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle><path class="password-eye-slash hidden" d="m3 3 18 18"></path></svg></button></div></div>
             <div id="account-security-feedback" aria-live="polite"></div>
           </div>
           <div class="modal-footer"><button class="button button-secondary" type="button" data-account-security-close>Cancel</button><button class="button button-primary" id="account-security-submit" type="submit">Confirm</button></div>
@@ -305,11 +325,11 @@
       <div class="profile-settings-body">
         <p class="profile-offline-notice hidden" id="profile-offline-notice" role="status">Account changes require an internet connection. Your saved workspace and queued operational changes are still available offline.</p>
         <form id="profile-details-form" class="profile-settings-section">
-          <div><h3>Personal information</h3><p>Update the name and contact number associated with your account.</p></div>
-          <label class="profile-settings-field" for="profile-full-name"><span>Full name</span><input class="form-control" id="profile-full-name" name="fullName" maxlength="100" autocomplete="name" required></label>
+          <div><h3>Personal information</h3><p>Your full name is fixed. You can update your contact number.</p></div>
+          <label class="profile-settings-field" for="profile-full-name"><span>Full name</span><input class="form-control" id="profile-full-name" name="fullName" maxlength="100" autocomplete="name" readonly aria-readonly="true"></label>
           <label class="profile-settings-field" for="profile-phone"><span>Contact number</span><input class="form-control" id="profile-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="e.g. 0917 123 4567"></label>
           <div class="profile-settings-feedback" id="profile-details-feedback" aria-live="polite"></div>
-          <button class="button button-primary" id="profile-details-submit" type="submit">Save personal information</button>
+          <button class="button button-primary" id="profile-details-submit" type="submit">Save contact number</button>
         </form>
         <form id="profile-email-form" class="profile-settings-section">
           <div><h3>Email address</h3><p>We'll send a confirmation email before your new address becomes active.</p></div>
@@ -319,9 +339,10 @@
         </form>
         <form id="profile-password-form" class="profile-settings-section">
           <div><h3>Security</h3><p>Confirm your current password before setting a new one.</p></div>
-          <label class="profile-settings-field" for="profile-current-password"><span>Current password</span><input class="form-control" id="profile-current-password" name="currentPassword" type="password" autocomplete="current-password" required></label>
-          <label class="profile-settings-field" for="profile-new-password"><span>New password</span><input class="form-control" id="profile-new-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>
-          <label class="profile-settings-field" for="profile-confirm-password"><span>Confirm new password</span><input class="form-control" id="profile-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+          <label class="profile-settings-field" for="profile-current-password"><span>Current password</span><div class="password-input-wrap"><input class="form-control" id="profile-current-password" name="currentPassword" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-password-toggle="profile-current-password" aria-label="Show current password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle><path class="password-eye-slash hidden" d="m3 3 18 18"></path></svg></button></div></label>
+          <label class="profile-settings-field" for="profile-new-password"><span>New password</span><div class="password-input-wrap"><input class="form-control" id="profile-new-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" required><button class="password-toggle" type="button" data-password-toggle="profile-new-password" aria-label="Show new password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle><path class="password-eye-slash hidden" d="m3 3 18 18"></path></svg></button></div></label>
+          <label class="profile-settings-field" for="profile-confirm-password"><span>Confirm new password</span><div class="password-input-wrap"><input class="form-control" id="profile-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required><button class="password-toggle" type="button" data-password-toggle="profile-confirm-password" aria-label="Show confirm new password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle><path class="password-eye-slash hidden" d="m3 3 18 18"></path></svg></button></div></label>
+          <p class="password-match-feedback" id="profile-password-match" aria-live="polite"></p>
           <div class="password-strength" id="profile-password-strength" aria-live="polite">
             <p class="form-help password-strength-title">Password must meet the following requirements:</p>
             <ul class="password-checklist">
@@ -382,6 +403,7 @@
       <p class="install-help-description">May parehong record na binago offline at sa website. Piliin ang kopyang gagamitin; hindi pa mawawala ang alinman hangga't hindi ka pumipili.</p>
       <div class="offline-conflicts-list" id="offline-conflicts-list"></div>
     </dialog>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="vendor/supabase.js"></script>
     <script src="pwa.js"></script>
     <script src="app.js"></script>
